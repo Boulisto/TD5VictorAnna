@@ -1,8 +1,18 @@
+import pandas as pd
+
+
 class Book:
     def __init__(self, name):
         self.name = name
         self.orders = []
         self.id = 1
+
+    def pandasStr(self):
+        dfbuy = pd.DataFrame([[x.id, x.prices, x.quantities] for x in self.orders if x.buy],
+                             columns=['Id', 'Price', 'Quantity'])
+        dfsell = pd.DataFrame([[x.id, x.prices, x.quantities] for x in self.orders if not x.buy],
+                              columns=['Id', 'Price', 'Quantity'])
+        return 'Buy\n', dfbuy, '\nSell\n', dfsell
 
     def insert_buy(self, quantities, prices):
         order = Order(True, quantities, prices, self.id)
@@ -75,7 +85,6 @@ class Book:
         orders = sorted(self.orders, key=lambda x: x.prices, reverse=True)
         for i in orders:
             res += '    ' + str(i) + '\n'
-
         return res
 
 
@@ -89,4 +98,3 @@ class Order:
     def __str__(self):
         return str('BUY ' + str(self.quantities) + "@" + str(self.prices) + ' id=' + str(
             self.id) if self.buy else 'SELL ' + str(self.quantities) + "@" + str(self.prices) + ' id=' + str(self.id))
-
